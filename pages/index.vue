@@ -40,6 +40,7 @@ export default {
     onDecode (result) {
       this.isCameraActive = !this.isCameraActive
       this.resultText = result
+      this.$store.dispatch('items/addData', result)
     },
     onResult (result) {
       console.log(result)
