@@ -1,5 +1,5 @@
 <script>
-import { BrowserMultiFormatReader, Exception } from "@zxing/library";
+import {BrowserMultiFormatReader, Exception, MultiFormatReader, BarcodeFormat, DecodeHintType} from "@zxing/library";
 export default {
   name: "scanner",
   data() {
@@ -29,11 +29,30 @@ export default {
 
   methods: {
     start() {
+      const hints = new Map();
+      const formats = [
+        BarcodeFormat.QR_CODE,
+        BarcodeFormat.CODE_128,
+        BarcodeFormat.DATA_MATRIX,
+        BarcodeFormat.AZTEC,
+        BarcodeFormat.EAN_8,
+        BarcodeFormat.CODE_93,
+        BarcodeFormat.UPC_E,
+        BarcodeFormat.EAN_13
+      ]
+      // hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
+      hints.set(DecodeHintType.TRY_HARDER, true);
+      this.codeReader.hints = hints;
+      console.log(this.codeReader.hints)
       this.codeReader.decodeFromVideoDevice(undefined, this.$refs.scanner, (result, err) => {
         if (result) {
           this.$emit("decode", result.text);
           this.$emit("result", result);
           this.reset()
+        }
+
+        if (err) {
+          // console.log(err)
         }
       });
     },
